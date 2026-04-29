@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f0c29,50:302b63,100:24243e&height=200&section=header&text=LLM%20Quantization%20Benchmark&fontSize=42&fontColor=ffffff&fontAlignY=38&desc=Q4_K_M%20vs%20IQ4_XS%20%E2%80%94%20Phi-3-mini%20%26%20Mistral-7B&descAlignY=58&descColor=a78bfa&animation=fadeIn" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12&height=200&section=header&text=LLM%20Quantization%20Benchmark&fontSize=40&fontColor=fff&fontAlignY=38&desc=Q4_K_M%20vs%20IQ4_XS%20%E2%80%94%20Phi-3-mini%20%26%20Mistral-7B&descAlignY=58&descColor=d8b4fe" width="100%"/>
 
 <br/>
 
@@ -16,7 +16,7 @@
 
 ### 🧠 Compare quantized LLMs live — memory, reasoning, and response quality at your fingertips
 
-[**🚀 Try the Live Demo**](#) · [**📓 Open in Kaggle**](#) · [**📊 View Results**](#results) · [**🛠 How It Works**](#architecture)
+[**🚀 Try the Live Demo**](#) &nbsp;·&nbsp; [**📓 Open in Kaggle**](#) &nbsp;·&nbsp; [**📊 View Results**](#-metrics-captured) &nbsp;·&nbsp; [**🛠 How It Works**](#%EF%B8%8F-architecture)
 
 <br/>
 
@@ -27,8 +27,8 @@
 ## ✨ What Is This?
 
 > **A fully interactive benchmarking suite** that pits two quantization strategies — `Q4_K_M` (standard 4-bit) vs `IQ4_XS` (importance-matrix optimized 4-bit) — against each other across **three cognitive tasks**, on two state-of-the-art open-source LLMs.
-
-No API keys. No paid services. 100% open-source, running on free Kaggle/HuggingFace GPUs.
+>
+> No API keys. No paid services. 100% open-source, running on free Kaggle / HuggingFace GPUs.
 
 <br/>
 
@@ -54,20 +54,43 @@ No API keys. No paid services. 100% open-source, running on free Kaggle/HuggingF
 ## 🧪 Three Benchmark Tests
 
 <div align="center">
+<table>
+<tr>
+<td align="center" width="33%">
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║                                                                  ║
-║   🧠 BUFFER WINDOW      📝 SUMMARY MEMORY     🔗 CHAIN-OF-THOUGHT ║
-║   ─────────────────     ──────────────────     ─────────────────  ║
-║   Sliding window of     Compressed running     Step-by-step math  ║
-║   last 3 turns.         summary of history.    & logic reasoning. ║
-║   Tests short-term      Tests long-term         Tests analytical   ║
-║   recall accuracy.      fact retention.         problem solving.   ║
-║                                                                  ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+### 🧠 Buffer Window Memory
 
+![](https://img.shields.io/badge/Type-Short--term%20Recall-7c3aed?style=flat-square)
+
+Maintains a **sliding window** of the last 3 conversation turns in context. At the end, asks the model recall questions.
+
+**What it tests:** Can the model remember facts stated a few turns ago?
+
+</td>
+<td align="center" width="33%">
+
+### 📝 Summary Memory
+
+![](https://img.shields.io/badge/Type-Long--term%20Retention-0891b2?style=flat-square)
+
+Compresses the entire conversation history into a **running summary string** — updated after every turn, no second LLM call.
+
+**What it tests:** Does the model retain facts across many turns without a full context window?
+
+</td>
+<td align="center" width="33%">
+
+### 🔗 Chain-of-Thought
+
+![](https://img.shields.io/badge/Type-Analytical%20Reasoning-059669?style=flat-square)
+
+Presents **math and logic problems**, requesting explicit step-by-step reasoning with a clearly stated final answer.
+
+**What it tests:** Is the reasoning process correct, coherent, and extractable?
+
+</td>
+</tr>
+</table>
 </div>
 
 <br/>
@@ -101,54 +124,96 @@ flowchart TD
 
 ## 📐 Pipeline — 5 Cells, One Notebook
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│  CELL 1 — 🔧 ENVIRONMENT                                            │
-│  ▸ Single clean llama-cpp-python install (CUDA 12.1 wheel)          │
-│  ▸ Gradio, matplotlib, seaborn, tqdm                                │
-│  ▸ GPU detection + import verification                              │
-└──────────────────────────────┬──────────────────────────────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────────────┐
-│  CELL 2 — ⚙️ CONFIG + DOWNLOADS                                     │
-│  ▸ Full seed coverage: random + numpy + PYTHONHASHSEED=42           │
-│  ▸ Kaggle-compatible paths (auto env-var fallback)                  │
-│  ▸ Resume-capable downloads with 64KB chunk streaming               │
-│  ▸ All 4 GGUF models verified on disk before proceeding             │
-└──────────────────────────────┬──────────────────────────────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────────────┐
-│  CELL 3 — 🧠 INFERENCE ENGINE                                       │
-│  ▸ Model-specific chat templates (Phi-3 vs Mistral)                 │
-│  ▸ True token counting via llm.tokenize() — not word split          │
-│  ▸ Buffer window test  → sliding 3-turn memory                      │
-│  ▸ Summary memory test → string-based, no double inference          │
-│  ▸ Chain-of-thought    → regex answer extraction                    │
-└──────────────────────────────┬──────────────────────────────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────────────┐
-│  CELL 4 — 🏁 BENCHMARK LOOP + PLOTS                                 │
-│  ▸ Per-model try/except — one failure never kills the run           │
-│  ▸ Incremental JSON checkpoint after every model                    │
-│  ▸ Tidy DataFrame → metrics.csv export                              │
-│  ▸ 4 comparison plots: latency, token dist, stacked time, scatter   │
-└──────────────────────────────┬──────────────────────────────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────────────┐
-│  CELL 5 — 🎨 GRADIO LIVE DEMO                                       │
-│  ▸ Stateful session — model loads once, reused across messages      │
-│  ▸ 4 interactive test modes switchable mid-conversation             │
-│  ▸ Real-time metrics panel: latency, tokens, tokens/sec             │
-│  ▸ Pre-run benchmark results embedded in accordion                  │
-│  ▸ share=True → instant public URL from Kaggle                      │
-└─────────────────────────────────────────────────────────────────────┘
-```
+<div align="center">
+<table>
+<tr>
+<td>
+
+**`CELL 1`** &nbsp; 🔧 &nbsp; **ENVIRONMENT**
+
+</td>
+<td>
+
+- Single clean `llama-cpp-python` install (CUDA 12.1 wheel) — no double install
+- Gradio 6.13, matplotlib, seaborn, tqdm
+- GPU hardware check + all-imports verification before proceeding
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+**`CELL 2`** &nbsp; ⚙️ &nbsp; **CONFIG + DOWNLOADS**
+
+</td>
+<td>
+
+- Full seed coverage: `random` + `numpy` + `PYTHONHASHSEED=42`
+- Kaggle-compatible paths via `MODEL_DIR` env-var fallback (not hardcoded `/content/`)
+- Resume-capable downloads — 64KB chunks, `.part` file kept on interruption
+- All 4 GGUF models verified on disk before proceeding
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+**`CELL 3`** &nbsp; 🧠 &nbsp; **INFERENCE ENGINE**
+
+</td>
+<td>
+
+- Model-specific chat templates: Phi-3 uses `<|system|>` · Mistral uses `[INST]`
+- True token counting via `llm.tokenize()` — not crude `split()`
+- Buffer window test → sliding 3-turn memory
+- Summary memory test → string-based, eliminates double inference bug
+- Chain-of-thought → regex final answer extraction
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+**`CELL 4`** &nbsp; 🏁 &nbsp; **BENCHMARK + PLOTS**
+
+</td>
+<td>
+
+- Per-model `try/except` — one failure never aborts the full run
+- Incremental JSON checkpoint saved after every model completes
+- Tidy `pd.DataFrame` → `metrics.csv` export
+- 4 seaborn comparison plots: latency by test, token distribution, stacked time, scatter
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+**`CELL 5`** &nbsp; 🎨 &nbsp; **GRADIO LIVE DEMO**
+
+</td>
+<td>
+
+- Stateful `DemoSession` — model loads once, reused across all messages
+- 4 interactive test modes switchable mid-conversation
+- Real-time metrics panel: latency · tokens · tokens/sec
+- Pre-run benchmark results and plots embedded in accordion
+- Auto port scanner (7860–7870) + `share=True` → instant public URL
+
+</td>
+</tr>
+</table>
+</div>
 
 <br/>
 
 ---
 
-## 📊 Metrics Captured <a name="results"></a>
+## 📊 Metrics Captured
 
 Every inference records:
 
@@ -160,7 +225,7 @@ Every inference records:
 | `tokens_per_sec` | `response_tokens / latency` | Derived at display time |
 | `extracted_answer` | Regex on CoT response | Numeric/fraction extraction |
 | `buffer_depth` | `len(history) // 2` | Active turns in sliding window |
-| `summary_length` | `len(summary_string)` | Chars of running summary |
+| `summary_length` | `len(summary_string)` | Characters of running summary |
 
 <br/>
 
@@ -174,14 +239,14 @@ Every inference records:
 |:--|:-------------|:------------|
 | 1 | `llama-cpp-python` installed **twice** | Single clean install in Cell 1 |
 | 2 | `len(text.split())` for token count | `llm.tokenize()` — true subword tokens |
-| 3 | Missing `PYTHONHASHSEED` seed | Set in Cell 2 alongside random + numpy |
+| 3 | Missing `PYTHONHASHSEED` in seed setup | Added alongside `random` + `numpy` in Cell 2 |
 | 4 | Hardcoded `/content/models/` (Colab only) | Env-var fallback, Kaggle-compatible |
-| 5 | No error handling in model loader | Per-model try/except, skips on failure |
-| 6 | No download resumption | Range requests + `.part` file kept |
+| 5 | No error handling in model loader | Per-model `try/except`, skips on failure |
+| 6 | No download resumption on interruption | Range requests + `.part` file kept |
 | 7 | 2× inference per summary turn | String-based summary — no second LLM call |
 | 8 | Wrong chat templates for both models | Phi-3 `<\|system\|>` · Mistral `[INST]` |
-| 9 | All output to stdout only | JSON + CSV persisted after every model |
-| 10 | No plots | 4 seaborn/matplotlib comparison charts |
+| 9 | All output to stdout only (lost on restart) | JSON + CSV persisted after every model |
+| 10 | Zero visualizations | 4 seaborn/matplotlib comparison charts |
 
 </div>
 
@@ -191,20 +256,23 @@ Every inference records:
 
 ## 🚀 Quick Start
 
-### Option A — Kaggle (recommended, free GPU)
+### Option A — Kaggle (recommended, free GPU T4)
 
 ```bash
-# 1. Open a new Kaggle notebook
-# 2. Enable GPU accelerator (T4 x2)
-# 3. Paste cells 1–5 in order
-# 4. Run all — Cell 5 prints a public share link
+# 1. New Kaggle notebook → Accelerator: GPU T4 x2
+# 2. Paste Cells 1–5 in order
+# 3. Run All
+# 4. Cell 5 prints a public share=True link
 ```
 
-### Option B — HuggingFace Spaces
+### Option B — HuggingFace Spaces (free, always-on)
 
-```python
-# New Space → SDK: Gradio → paste all 5 cells into app.py
-# Add requirements.txt:
+```
+New Space → SDK: Gradio → paste all 5 cells into app.py
+```
+
+```txt
+# requirements.txt
 llama-cpp-python
 gradio>=6.0
 numpy
@@ -214,18 +282,16 @@ seaborn
 tqdm
 ```
 
-### Option C — Local (GPU required)
+### Option C — Local (NVIDIA GPU required)
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/llm-quantization-benchmark
 cd llm-quantization-benchmark
 
-# Install with CUDA 12.1 wheel
-pip install llama-cpp-python --extra-index-url \
-  https://abetlen.github.io/llama-cpp-python/whl/cu121
+pip install llama-cpp-python \
+  --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu121
 pip install gradio numpy pandas matplotlib seaborn tqdm
 
-# Run
 export PYTHONHASHSEED=42
 export MODEL_DIR=./models
 python main.py
@@ -240,7 +306,7 @@ python main.py
 | Requirement | Value |
 |:------------|:------|
 | Python | 3.10+ |
-| GPU | NVIDIA T4 / P100 (≥8GB VRAM) |
+| GPU | NVIDIA T4 / P100 (≥ 8 GB VRAM) |
 | CUDA | 12.1 |
 | Disk | ~14 GB (all 4 models) |
 | RAM | 16 GB+ |
@@ -254,8 +320,8 @@ python main.py
 
 ```
 /kaggle/working/outputs/
-├── results_TIMESTAMP.json       ← Full nested benchmark results
-├── metrics_TIMESTAMP.csv        ← Tidy DataFrame (one row per inference)
+├── results_TIMESTAMP.json        ← Full nested benchmark results
+├── metrics_TIMESTAMP.csv         ← Tidy DataFrame (one row per inference)
 └── benchmark_plots_TIMESTAMP.png ← 4-panel comparison chart
 ```
 
@@ -282,10 +348,10 @@ python main.py
 
 ## 🌱 Reproducibility
 
-- **Seed**: `GLOBAL_SEED = 42` applied to `random`, `numpy`, `PYTHONHASHSEED`, and llama-cpp generation
-- **Determinism note**: `temperature=0.7, top_p=0.9` introduce controlled sampling; seed mitigates but doesn't eliminate variance across hardware
-- **Checkpoints**: Results saved after every model — kernel crashes lose at most one model's data
-- **Downloads**: `.part` files kept on interruption — re-run to resume without re-downloading
+- **Seed** — `GLOBAL_SEED = 42` applied to `random`, `numpy`, `PYTHONHASHSEED`, and llama-cpp generation config
+- **Sampling note** — `temperature=0.7, top_p=0.9` introduce controlled stochasticity; seed mitigates but doesn't eliminate variance across different hardware
+- **Checkpoints** — results saved after every model; a kernel crash loses at most one model's data
+- **Downloads** — `.part` files kept on interruption; re-run to resume without re-downloading from zero
 
 <br/>
 
@@ -293,10 +359,12 @@ python main.py
 
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:24243e,50:302b63,100:0f0c29&height=120&section=footer&animation=fadeIn" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12&height=120&section=footer" width="100%"/>
 
-**Built for a college ML portfolio · 100% open-source · No API keys required**
+**Built for a college ML portfolio &nbsp;·&nbsp; 100% open-source &nbsp;·&nbsp; No API keys required**
 
-⭐ Star this repo if it helped you understand LLM quantization!
+<br/>
+
+⭐ **Star this repo if it helped you understand LLM quantization!**
 
 </div>
