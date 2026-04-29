@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12&height=200&section=header&text=LLM%20Quantization%20Benchmark&fontSize=40&fontColor=fff&fontAlignY=38&desc=Q4_K_M%20vs%20IQ4_XS%20%E2%80%94%20Phi-3-mini%20%26%20Mistral-7B&descAlignY=58&descColor=d8b4fe" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12&height=200&section=header&text=LLM%20Quantization%20Benchmark&fontSize=40&fontColor=fff&fontAlignY=38&desc=Q4_K_M%20vs%20IQ4_XS%20%E2%80%94%20Phi-3-mini%20%26amp%3B%20Mistral-7B&descAlignY=58&descColor=d8b4fe" width="100%"/>
 
 <br/>
 
