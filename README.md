@@ -26,9 +26,13 @@
 
 ## ✨ What Is This?
 
+<div align="center">
+
 > **A fully interactive benchmarking suite** that pits two quantization strategies — `Q4_K_M` (standard 4-bit) vs `IQ4_XS` (importance-matrix optimized 4-bit) — against each other across **three cognitive tasks**, on two state-of-the-art open-source LLMs.
 >
 > No API keys. No paid services. 100% open-source, running on free Kaggle / HuggingFace GPUs.
+
+</div>
 
 <br/>
 
@@ -99,6 +103,8 @@ Presents **math and logic problems**, requesting explicit step-by-step reasoning
 
 ## 🏗️ Architecture
 
+<div align="center">
+
 ```mermaid
 flowchart TD
     A([🚀 Start]) --> B[Cell 1\nDependency Install\nllama-cpp CUDA 12.1]
@@ -118,6 +124,8 @@ flowchart TD
     style H fill:#1e293b,color:#94a3b8,stroke:#334155
 ```
 
+</div>
+
 <br/>
 
 ---
@@ -127,9 +135,9 @@ flowchart TD
 <div align="center">
 <table>
 <tr>
-<td>
+<td align="center" width="22%">
 
-**`CELL 1`** &nbsp; 🔧 &nbsp; **ENVIRONMENT**
+**`CELL 1`** &nbsp; 🔧<br/>**ENVIRONMENT**
 
 </td>
 <td>
@@ -140,11 +148,10 @@ flowchart TD
 
 </td>
 </tr>
-
 <tr>
-<td>
+<td align="center" width="22%">
 
-**`CELL 2`** &nbsp; ⚙️ &nbsp; **CONFIG + DOWNLOADS**
+**`CELL 2`** &nbsp; ⚙️<br/>**CONFIG + DOWNLOADS**
 
 </td>
 <td>
@@ -156,11 +163,10 @@ flowchart TD
 
 </td>
 </tr>
-
 <tr>
-<td>
+<td align="center" width="22%">
 
-**`CELL 3`** &nbsp; 🧠 &nbsp; **INFERENCE ENGINE**
+**`CELL 3`** &nbsp; 🧠<br/>**INFERENCE ENGINE**
 
 </td>
 <td>
@@ -173,11 +179,10 @@ flowchart TD
 
 </td>
 </tr>
-
 <tr>
-<td>
+<td align="center" width="22%">
 
-**`CELL 4`** &nbsp; 🏁 &nbsp; **BENCHMARK + PLOTS**
+**`CELL 4`** &nbsp; 🏁<br/>**BENCHMARK + PLOTS**
 
 </td>
 <td>
@@ -189,11 +194,10 @@ flowchart TD
 
 </td>
 </tr>
-
 <tr>
-<td>
+<td align="center" width="22%">
 
-**`CELL 5`** &nbsp; 🎨 &nbsp; **GRADIO LIVE DEMO**
+**`CELL 5`** &nbsp; 🎨<br/>**GRADIO LIVE DEMO**
 
 </td>
 <td>
@@ -215,7 +219,7 @@ flowchart TD
 
 ## 📊 Metrics Captured
 
-Every inference records:
+<div align="center">
 
 | Metric | Method | Notes |
 |:-------|:-------|:------|
@@ -226,6 +230,8 @@ Every inference records:
 | `extracted_answer` | Regex on CoT response | Numeric/fraction extraction |
 | `buffer_depth` | `len(history) // 2` | Active turns in sliding window |
 | `summary_length` | `len(summary_string)` | Characters of running summary |
+
+</div>
 
 <br/>
 
@@ -256,7 +262,19 @@ Every inference records:
 
 ## 🚀 Quick Start
 
-### Option A — Kaggle (recommended, free GPU T4)
+<div align="center">
+
+| | Option | Best For |
+|:--|:-------|:---------|
+| **A** | Kaggle Notebook | Free GPU, fastest setup |
+| **B** | HuggingFace Spaces | Always-on public demo |
+| **C** | Local Machine | Full control, offline use |
+
+</div>
+
+<br/>
+
+**Option A — Kaggle** *(recommended, free GPU T4)*
 
 ```bash
 # 1. New Kaggle notebook → Accelerator: GPU T4 x2
@@ -265,7 +283,7 @@ Every inference records:
 # 4. Cell 5 prints a public share=True link
 ```
 
-### Option B — HuggingFace Spaces (free, always-on)
+**Option B — HuggingFace Spaces**
 
 ```
 New Space → SDK: Gradio → paste all 5 cells into app.py
@@ -282,7 +300,7 @@ seaborn
 tqdm
 ```
 
-### Option C — Local (NVIDIA GPU required)
+**Option C — Local** *(NVIDIA GPU required)*
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/llm-quantization-benchmark
@@ -303,6 +321,8 @@ python main.py
 
 ## 🖥️ Requirements
 
+<div align="center">
+
 | Requirement | Value |
 |:------------|:------|
 | Python | 3.10+ |
@@ -312,18 +332,23 @@ python main.py
 | RAM | 16 GB+ |
 | Network | HuggingFace access for model download |
 
+</div>
+
 <br/>
 
 ---
 
 ## 📁 Output Files
 
-```
-/kaggle/working/outputs/
-├── results_TIMESTAMP.json        ← Full nested benchmark results
-├── metrics_TIMESTAMP.csv         ← Tidy DataFrame (one row per inference)
-└── benchmark_plots_TIMESTAMP.png ← 4-panel comparison chart
-```
+<div align="center">
+
+| File | Contents |
+|:-----|:---------|
+| `results_TIMESTAMP.json` | Full nested benchmark results per model |
+| `metrics_TIMESTAMP.csv` | Tidy DataFrame — one row per inference |
+| `benchmark_plots_TIMESTAMP.png` | 4-panel seaborn comparison chart |
+
+</div>
 
 <br/>
 
@@ -348,10 +373,16 @@ python main.py
 
 ## 🌱 Reproducibility
 
-- **Seed** — `GLOBAL_SEED = 42` applied to `random`, `numpy`, `PYTHONHASHSEED`, and llama-cpp generation config
-- **Sampling note** — `temperature=0.7, top_p=0.9` introduce controlled stochasticity; seed mitigates but doesn't eliminate variance across different hardware
-- **Checkpoints** — results saved after every model; a kernel crash loses at most one model's data
-- **Downloads** — `.part` files kept on interruption; re-run to resume without re-downloading from zero
+<div align="center">
+
+| Factor | Detail |
+|:-------|:-------|
+| **Seed** | `GLOBAL_SEED = 42` — applied to `random`, `numpy`, `PYTHONHASHSEED`, and llama-cpp generation config |
+| **Sampling** | `temperature=0.7, top_p=0.9` — controlled stochasticity; seed mitigates but doesn't fully eliminate variance across hardware |
+| **Checkpoints** | Results saved after every model — a kernel crash loses at most one model's data |
+| **Downloads** | `.part` files kept on interruption — re-run to resume without re-downloading from zero |
+
+</div>
 
 <br/>
 
